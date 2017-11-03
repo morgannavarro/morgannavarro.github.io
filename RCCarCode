@@ -1,0 +1,106 @@
+#include <Servo.h>
+
+int turnServoPin = 10;
+int driveServoPin = 9;
+//const int buzzer = 3 ;
+
+Servo turnServo;
+Servo driveServo;
+
+//Bluetooth (HC-06 JY-MCU) State pin on pin 2 of Arduino
+  const int BTState = 2;
+
+//Useful Variables
+
+  int j = 0;
+  int state;
+  int speed;
+  int bSpeed;
+
+void setup() {
+
+    pinMode(BTState, INPUT);
+    turnServo.attach(turnServoPin);
+    driveServo.attach(driveServoPin);
+    turnServo.write(75);
+    speed = -90;
+    Serial.begin(9600);
+
+}
+
+void loop() {
+
+  //Save income data to variable 'state'
+    if(Serial.available() > 0){
+      state = Serial.read();
+    }
+
+    if (state == 1){
+      speed = 80;
+    }
+
+    if (state == 2){
+      speed = 60;
+    }
+
+    if (state == 3){
+      speed = 40;
+    }
+
+    if (state == 4){
+      speed = 20;
+    }
+
+  /***********************Forward****************************/
+  //If state is equal with letter 'F', car will go forward!
+    if (state == 'F') {
+      driveServo.write(speed);
+      turnServo.write(75);
+    }
+  /**********************Forward Left************************/
+  //If state is equal with letter 'G', car will go forward left
+    else if (state == 'G') {
+      driveServo.write(speed);
+      turnServo.write(55);
+    }
+  /**********************Forward Right************************/
+  //If state is equal with letter 'I', car will go forward right
+    else if (state == 'I') {
+      driveServo.write(speed);
+      turnServo.write(95);
+    }
+  /***********************Backward****************************/
+  //If state is equal with letter 'B', car will go backward
+    else if (state == 'B') {
+      turnServo.write(75);
+      driveServo.write(160);
+    }
+  /**********************Backward Left************************/
+  //If state is equal with letter 'H', car will go backward left
+    else if (state == 'H') {
+      driveServo.write(160);
+      turnServo.write(55);
+    }
+  /**********************Backward Right************************/
+  //If state is equal with letter 'J', car will go backward right
+    else if (state == 'J') {
+      driveServo.write(160);
+      turnServo.write(95);
+    }
+  /***************************Left*****************************/
+  //If state is equal with letter 'L', wheels will turn left
+    else if (state == 'L') {
+      turnServo.write(55);
+    }
+  /***************************Right*****************************/
+  //If state is equal with letter 'R', wheels will turn right
+    else if (state == 'R') {
+      turnServo.write(95);
+    }
+  /************************Stop*****************************/
+  //If state is equal with letter 'S', stop the car
+    else if (state == 'S'){
+      driveServo.write(90);
+    }
+
+}
